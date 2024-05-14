@@ -10,11 +10,20 @@ class Flight:
         self.date = datetime.strptime(date_str, "%A %d %b %Y")
 
 def get_total_cost(outbound, inbound):
-    total_cost = {}
+    total_cost = []  # Initialize an empty list to store total costs
+
+    # Iterate through all combinations of outbound and inbound flights
     for out_flight in outbound:
         for in_flight in inbound:
-            if out_flight.airline != in_flight.airline:
-                total_cost[(out_flight.airline, in_flight.airline)] = out_flight.price + in_flight.price
+            # Calculate the total cost for the combination
+            combination_cost = out_flight.price + in_flight.price
+            # Append a tuple containing airline, outbound flight, inbound flight, and total cost
+            total_cost.append((out_flight.airline, out_flight, in_flight, combination_cost))
+
+    # Sort the total costs in ascending order
+    #total_cost.sort()
+
+    # Return the lowest total cost found
     return total_cost
 
 def get_flights():
