@@ -26,7 +26,7 @@ class TestFlightOrganizer(unittest.TestCase):
         for option in options:
             airline, outbound_flight, inbound_flight, total_cost = option
             # Ensure all options are cheaper than the lowest cost option
-            self.assertLess(total_cost, lowest_cost_option[3])
+            self.assertLess(total_cost[3], lowest_cost_option[3])
 
     """def test_get_cheapest_flights(self):
         expected_result = [("WizzAir", "RyanAir", 425.98), ("RyanAir", "WizzAir", 420.52)]
