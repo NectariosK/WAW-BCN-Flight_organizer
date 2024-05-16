@@ -46,4 +46,4 @@ def get_total_cost(outbound_flights, inbound_flights, outbound_airline, inbound_
     #total_cost.sort()
 
     # Return the lowest total cost found
-    #re
+    #return total_cost

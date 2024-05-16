@@ -48,4 +48,10 @@ class FlightOrganizer:
         for outbound_flight in outbound_flights:
             for inbound_flight in inbound_flights:
                 if self._is_two_nights_stay(outbound_flight, inbound_flight):
-               
+                    total_cost = self.get_total_cost(outbound_flight, inbound_flight)
+                    options_list.append((outbound_airline, outbound_flight, inbound_airline, inbound_flight, total_cost))
+
+    def _is_two_nights_stay(self, outbound_flight, inbound_flight):
+        outbound_date = outbound_flight.date
+        inbound_date = inbound_flight.date
+        return (inbound_date - outbound_date).days == 2
