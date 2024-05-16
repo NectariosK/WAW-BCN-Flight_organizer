@@ -1,85 +1,57 @@
-from flight import Flight
-from data import get_flights, get_total_cost
+from data import get_flights
+
 
 class FlightOrganizer:
-    def __init__(self):
-        self.flights = self._load_flights()
-
-    def _load_flights(self):
-        return get_flights()
+    def __init__(self, flights_data):
+        self.flights_data = flights_data
+        #self.flights = self._load_flights()
 
     def get_cheapest_round_trip(self):
         all_round_trip_options = []
 
-        # Iterate through each airline's flights
-        for airline, details in self.flights.items():
-            outbound_flights = details["outbound"]
-            inbound_flights = details["inbound"]
+        # Scenario 1: WizzAir for both outbound and inbound flights
+        self._add_round_trip_options("WizzAir", "WizzAir", all_round_trip_options)
 
-            # Combine outbound and inbound flights
-            for outbound_flight in outbound_flights:
-                for inbound_flight in inbound_flights:
-                    if self._is_two_nights_stay(outbound_flight, inbound_flight):
-                        total_cost = outbound_flight.price + inbound_flight.price
-                        all_round_trip_options.append((airline, outbound_flight, inbound_flight, total_cost))
+        # Scenario 2: RyanAir for both outbound and inbound flights
+        self._add_round_trip_options("RyanAir", "RyanAir", all_round_trip_options)
+
+        # Scenario 3: WizzAir outbound, RyanAir inbound
+        self._add_round_trip_options("WizzAir", "RyanAir", all_round_trip_options)
+
+        # Scenario 4: RyanAir outbound, WizzAir inbound
+        self._add_round_trip_options("RyanAir", "WizzAir", all_round_trip_options)
 
         # Sort round trip options by total cost
         all_round_trip_options.sort(key=lambda x: x[3])
 
         return all_round_trip_options
 
-    """def get_cheapest_round_trip(self):
-        # Method to find the cheapest round trip flights
-        all_round_trip_options = []
+    def get_outbound_flights(self, airline):
+        if airline in self.flights_data:
+            return self.flights_data[airline]["outbound"]
+        else:
+            return []
 
-        # Iterate through each airline's flights
-        for airline, details in self.flights.items():
-            outbound_flights = details["outbound"]
-            inbound_flights = details["inbound"]
+    def get_inbound_flights(self, airline):
+        if airline in self.flights_data:
+            return self.flights_data[airline]["inbound"]
+        else:
+            return []
 
-            # Combine outbound and inbound flights
-            for outbound_flight in outbound_flights:
-                for inbound_flight in inbound_flights:
-                    # Check if the stay in Barcelona is for 2 nights
-                    if self._is_two_nights_stay(outbound_flight, inbound_flight):
-                        # Calculate total cost for the round trip
-                        total_cost = outbound_flight.price + inbound_flight.price
+    def get_total_cost(self, outbound_flight, inbound_flight):
+        return outbound_flight.cost + inbound_flight.cost
 
-                        # Print information about each round trip option
-                        print(
-                            f"Airlines: {airline} - Outbound Flight: {outbound_flight} - Inbound Flight: {inbound_flight} - Total Cost: {total_cost}")
+    def _add_round_trip_options(self, outbound_airline, inbound_airline, options_list):
+        outbound_flights = self.flights_data[outbound_airline]["outbound"]
+        inbound_flights = self.flights_data[inbound_airline]["inbound"]
 
-                        # Append round trip option to the list
-                        all_round_trip_options.append((airline, outbound_flight, inbound_flight, total_cost))
-
-        # Sort round trip options by total cost
-        all_round_trip_options.sort(key=lambda x: x[3])
-
-        # Print the sorted round trip options
-        print("\nSorted Round Trip Options:")
-        for option in all_round_trip_options:
-            print(option)
-
-        # Return the sorted round trip options
-        return all_round_trip_options"""
+        for outbound_flight in outbound_flights:
+            for inbound_flight in inbound_flights:
+                if self._is_two_nights_stay(outbound_flight, inbound_flight):
+                    total_cost = self.get_total_cost(outbound_flight, inbound_flight)
+                    options_list.append((outbound_airline, outbound_flight, inbound_airline, inbound_flight, total_cost))
 
     def _is_two_nights_stay(self, outbound_flight, inbound_flight):
         outbound_date = outbound_flight.date
         inbound_date = inbound_flight.date
         return (inbound_date - outbound_date).days == 2
-
-
-"""def print_flight_options(flights):
-    for airline, details in flights.items():
-        print(f"Airline: {airline}")
-        print("-------------------------------------------------------")
-        total_cost = get_total_cost(details["outbound"], details["inbound"])
-        sorted_costs = sorted(total_cost.items(), key=lambda x: x[1])
-        for combination, cost in sorted_costs:
-            print(f"From {combination[0]} to {combination[1]}: Total Cost - {cost} PLN")
-        print("\n")
-"""
-
-if __name__ == "__main__":
-    organizer = FlightOrganizer()
-    organizer.get_cheapest_round_trip()

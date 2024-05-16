@@ -1,13 +1,5 @@
 from flight import Flight
 
-def get_total_cost(outbound, inbound):
-    total_cost = {}
-    for out_flight in outbound:
-        for in_flight in inbound:
-            if out_flight.airline != in_flight.airline:
-                total_cost[(out_flight.airline, in_flight.airline)] = out_flight.price + in_flight.price
-    return total_cost
-
 def get_flights():
     flights = {
         "WizzAir": {
